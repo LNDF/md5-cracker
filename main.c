@@ -67,7 +67,7 @@ int run(char* testbuf, unsigned char* hash) {
     int testbuf_size = 0;
     while (1) {
         for (int i = 0; i < MAX_SIZE; ++i) {
-            testbuf[i] = testbuf[i] == 0 ? 0x20 : testbuf[i] + 1;
+            ++testbuf[i];
             if (testbuf[i] < 0x7f) {
                 testbuf_size = testbuf_size > i ? testbuf_size : i + 1;
                 goto test;
@@ -81,6 +81,7 @@ test:
             return 2;
         }
         if (memcmp(testhash, hash, 16) == 0) {
+            testbuf[testbuf_size] = '\0';
             return 0;
         }
     }
@@ -100,8 +101,8 @@ int main(int argc, char *argv[]) {
         printf("Invalid hash\n");
         return 1;
     }
-    char testbuf[MAX_SIZE];
-    memset(testbuf, 0x0, MAX_SIZE);
+    char testbuf[MAX_SIZE + 1];
+    memset(testbuf, 0x19, MAX_SIZE + 1);
     int result = run(testbuf, hash);
     if (result == 0) {
         printf("Found: %s\n", testbuf);
